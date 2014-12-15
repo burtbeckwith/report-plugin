@@ -1,0 +1,24 @@
+<plugin name='report-plugin' version='0.994' grailsVersion='2.2 &gt; *'>
+  <author>Your name</author>
+  <title>Report Plugin Plugin</title>
+  <description>Brief summary/description of the plugin.
+</description>
+  <documentation>http://grails.org/plugin/report-plugin</documentation>
+  <type>ReportPluginGrailsPlugin</type>
+  <resources>
+    <resource>com.letv.plugin.report.ReportController</resource>
+    <resource>com.letv.plugin.report.DictCacheService</resource>
+    <resource>com.letv.plugin.report.ReportService</resource>
+  </resources>
+  <repositories>
+    <repository name='grailsCentral' url='http://grails.org/plugins' />
+  </repositories>
+  <dependencies>
+    <runtime>
+      <dependency group='com.google.guava' name='guava' version='17.0' />
+    </runtime>
+  </dependencies>
+  <plugins />
+  <runtimePluginRequirements />
+  <behavior />
+</plugin>
