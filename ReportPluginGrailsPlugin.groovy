@@ -10,11 +10,10 @@ class ReportPluginGrailsPlugin {
 
     // TODO Fill in these fields
     def title = "Report Plugin Plugin" // Headline display name of the plugin
-    def author = "zhanghao"
+    def author = "fh63045"
     def authorEmail = ""
     def description = '''\
-Brief summary/description of the plugin.
-'''
+报表插件'''
 
     // URL to the plugin's documentation
     def documentation = "http://grails.org/plugin/report-plugin"

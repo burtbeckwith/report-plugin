@@ -1,8 +1,7 @@
-<plugin name='report-plugin' version='0.994' grailsVersion='2.2 &gt; *'>
-  <author>Your name</author>
+<plugin name='report-plugin' version='0.0.1' grailsVersion='2.2 &gt; *'>
+  <author>zhanghao</author>
   <title>Report Plugin Plugin</title>
-  <description>Brief summary/description of the plugin.
-</description>
+  <description>报表插件</description>
   <documentation>http://grails.org/plugin/report-plugin</documentation>
   <type>ReportPluginGrailsPlugin</type>
   <resources>
