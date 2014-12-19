@@ -8,7 +8,7 @@ import java.text.SimpleDateFormat
 
 class ReportService {
 
-    static transactional = true
+    static transactional = false
 
     def dictCacheService
     def grailsApplication
@@ -18,27 +18,20 @@ class ReportService {
      * @param reportName
      * @return
      */
-    public def initParams(String reportName) {
+    def initParams(String reportName) {
         def config = grailsApplication.config.report.get(reportName)
 
         def groupParams = config.groupParams.collect { code ->
-            def map = [:];
-            map.code = code
-            map.name = dictCacheService.getData(code, reportName).name
-            return map
+            return [code: code, name: dictCacheService.getData(code, reportName).name]
         }
         def queryParams = config.queryParams.collect { code ->
-            def map = [:];
-            map.code = code
-            map.name = dictCacheService.getData(code, reportName).name
-            map.data = dictCacheService.getData(code, reportName).data
-            return map
+            return [
+                code: code,
+                name: dictCacheService.getData(code, reportName).name,
+                data: dictCacheService.getData(code, reportName).data]
         }
         def displayParams = config.displayParams.collect { code ->
-            def map = [:];
-            map.code = code
-            map.name = dictCacheService.getData(code, reportName).name
-            return map
+            return [code: code, name: dictCacheService.getData(code, reportName).name]
         }
         return [reportName : reportName, groupParams : groupParams, queryParams : queryParams, displayParams : displayParams]
     }
@@ -50,7 +43,7 @@ class ReportService {
      * @param reportName
      * @return
      */
-    public def getTableHeader(List groupByCol, List displayParams, String reportName) {
+    def getTableHeader(List groupByCol, List displayParams, String reportName) {
         def selectPart = ["日期"]
         def all = groupByCol + displayParams//注意顺序--
 
@@ -67,25 +60,23 @@ class ReportService {
         return selectPart
     }
 
-    private def handerSelect( List displayParams, String reportName){
-        def selectPart = []
-        selectPart << "t.data_time"//数据时间 字段名写死
+    private handerSelect( List displayParams, String reportName){
+        def selectPart = ["t.data_time"] //数据时间 字段名写死
         //处理显示列
         displayParams.each {code->
             Map item = dictCacheService.getData(code, reportName)
-            if(item.get("eval") == null){
-                selectPart << "sum(t.${code}) as $code"
-            }else{
+            if(item.get("eval")){
                 selectPart << "${item.eval} as $code"
+            }else{
+                selectPart << "sum(t.${code}) as $code"
             }
         }
         return selectPart
     }
 
-    private def handerWhere(Map queryMap, String startDate, String endDate){
-        def wherePart = []
+    private handerWhere(Map queryMap, String startDate, String endDate){
         //处理各个查询条件
-        wherePart << "t.data_time between '$startDate' and '$endDate'"
+        def wherePart = ["t.data_time between '$startDate' and '$endDate'"]
         if(queryMap){
             queryMap.each {key, value ->
                 wherePart << "t.$key in ($value)"
@@ -94,10 +85,10 @@ class ReportService {
         return wherePart
     }
 
-    private def handerGroup(List grougByCol, List selectPart){
+    private handerGroup(List grougByCol, List selectPart){
         def groupPart = []
         //处理分组 --group的字段要放在select的字段前，数据格式才可读
-        def seleTmp = [];
+        def seleTmp = []
         groupPart << "t.data_time"//此处写死 TODO   data_time
         if(grougByCol){
             grougByCol.each {code->
@@ -140,7 +131,6 @@ class ReportService {
                 group by $groupStr
                 limit $start, $limit
                 """
-        println sqlStr
         return sqlStr
     }
 
@@ -172,7 +162,6 @@ class ReportService {
                 where $whereStr
                 group by $groupStr ) as s
                 """
-        println sqlStr
         return sqlStr
     }
 
@@ -189,7 +178,7 @@ class ReportService {
      * @param sEcho
      * @return
      */
-    public def queryData(String reportName, Map queryMap, List groupByCol, List displayParams,
+    public queryData(String reportName, Map queryMap, List groupByCol, List displayParams,
                          String startDate, String endDate, Integer start, Integer limit, Integer sEcho) {
 
         String sqlStr = getDataSQL(reportName, queryMap, groupByCol, displayParams, startDate, endDate, start, limit)
